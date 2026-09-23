@@ -6,14 +6,20 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const config = require('./config.json');
+// config.json 为本地可选配置（已 gitignore，云端通过环境变量注入）
+let config = {};
+try { config = require('./config.json'); } catch (e) { }
 const seed = require('./seed');
 const api = require('./api');
+const db = require('./db');
 
 const WEB_DIR = path.join(__dirname, '..', 'web');
 
-// 首次启动初始化种子数据
-seed.initAll();
+// 初始化数据库 + 种子数据（异步）
+(async () => {
+	await db.init();
+	await seed.initAll();
+})();
 
 const MIME = {
 	'.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
@@ -99,11 +105,13 @@ const server = http.createServer((req, res) => {
 	serveStatic(req, res, pathname);
 });
 
-server.listen(config.port, () => {
+// Render 等云平台会注入 PORT 环境变量，必须监听它
+const PORT = process.env.PORT || config.port || 3000;
+server.listen(PORT, () => {
 	console.log('========================================');
 	console.log('  红色文化馆网页版已启动');
-	console.log('  用户端:  http://localhost:' + config.port);
-	console.log('  管理后台: http://localhost:' + config.port + '/admin.html');
+	console.log('  用户端:  http://localhost:' + PORT);
+	console.log('  管理后台: http://localhost:' + PORT + '/admin.html');
 	console.log('  默认管理员: admin / 123456');
 	console.log('========================================');
 });

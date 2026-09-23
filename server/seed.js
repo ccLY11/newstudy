@@ -1,9 +1,8 @@
 /**
  * 种子数据：首次启动时自动生成（对应小程序框架自动初始化 8 个 bx_ 集合的逻辑）
+ * 支持 JSON 文件 和 MongoDB 双模式
  */
 const db = require('./db');
-const fs = require('fs');
-const path = require('path');
 
 const now = () => Math.floor(Date.now() / 1000);
 const day = 86400;
@@ -15,7 +14,6 @@ const NEWS_CATE = [
 	{ id: 3, title: '文化教育' },
 	{ id: 4, title: '安全教育' }
 ];
-const NEWS_TAB = { '活动通知': '活动通知', '培训通知': '培训通知', '重要通知': '重要通知', '政策通知': '政策通知' };
 
 const SEED = {};
 
@@ -50,7 +48,6 @@ SEED.user = () => ([
 	}
 ]);
 
-// 12 条通知（来自小程序 news_cate1 静态数据）+ 4 条补充（丝路介绍/安全教育）
 SEED.news = () => {
 	const mk = (id, cateId, cateName, tab, title, date, vouch, content, pic) => ({
 		_id: 'news_' + id,
@@ -88,7 +85,6 @@ SEED.news = () => {
 	];
 };
 
-// 4 个报名项目（对应 ENROLL_CATE 四分类）
 SEED.enroll = () => {
 	const start = now() - day, end = now() + 30 * day;
 	return [
@@ -204,23 +200,29 @@ SEED.setup = () => ([
 	{ key: 'SETUP_HOME_VOUCH', content: [] }
 ]);
 
-// 直接落盘写入
-function dbCacheSet(name, data) {
-	const file = path.join(db.DATA_DIR, name + '.json');
-	fs.mkdirSync(db.DATA_DIR, { recursive: true });
-	fs.writeFileSync(file, JSON.stringify(data, null, 1), 'utf8');
-}
-
-/** 启动时检查全部集合，缺失的生成种子数据 */
-function initAll() {
-	fs.mkdirSync(db.DATA_DIR, { recursive: true });
+/** 启动时检查全部集合，缺失的生成种子数据（异步，支持 MongoDB） */
+async function initAll() {
 	for (const key of Object.keys(SEED)) {
-		const file = path.join(db.DATA_DIR, key + '.json');
-		if (!fs.existsSync(file)) {
-			dbCacheSet(key, SEED[key]());
+		const has = await db.exists(key);
+		if (!has) {
+			await db.insertMany(key, SEED[key]());
 			console.log('[seed] 初始化集合:', key);
 		}
 	}
 }
 
-module.exports = { initAll };
+/** 同步初始化单个集合（JSON 模式下 db.list 内部调用） */
+function initSync(name) {
+	const fn = SEED[name];
+	if (!fn) return;
+	const fs = require('fs');
+	const path = require('path');
+	const file = path.join(db.DATA_DIR, name + '.json');
+	if (!fs.existsSync(file)) {
+		fs.mkdirSync(db.DATA_DIR, { recursive: true });
+		fs.writeFileSync(file, JSON.stringify(fn(), null, 1), 'utf8');
+		console.log('[seed] 初始化集合:', name);
+	}
+}
+
+module.exports = { initAll, initSync };

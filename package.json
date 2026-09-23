@@ -1,0 +1,15 @@
+{
+  "name": "red-culture-webapp",
+  "version": "1.0.0",
+  "description": "红色公益文化馆网页版",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "dependencies": {
+    "mongodb": "^6.21.0"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}

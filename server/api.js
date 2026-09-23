@@ -6,7 +6,6 @@
 const db = require('./db');
 const auth = require('./auth');
 const ai = require('./ai');
-const seed = require('./seed');
 
 const NEWS_CATE = { 1: '公告通知', 2: '丝路小程序介绍', 3: '文化教育', 4: '安全教育' };
 const ENROLL_CATE = { 1: '普通话教学', 2: '实战检验', 3: 'AI助学', 4: '我要报名' };
@@ -37,8 +36,8 @@ function fmtDate(ts) {
 	return fmtTime(ts).split(' ')[0];
 }
 
-function writeLog(adminName, content, type) {
-	db.insert('log', {
+async function writeLog(adminName, content, type) {
+	await db.insert('log', {
 		_id: db.nextId('log_'), LOG_ADMIN_NAME: adminName, LOG_CONTENT: content,
 		LOG_TYPE: type || 'content', LOG_ADD_TIME: now()
 	});
@@ -114,7 +113,7 @@ const routes = {};
 /* ---------- 用户端 ---------- */
 
 // 注册（姓名+手机号；USER_REG_CHECK=false 直接通过）
-routes['user/register'] = (body) => {
+routes['user/register'] = async (body) => {
 	const name = (body.name || '').trim();
 	const mobile = (body.mobile || '').trim();
 	if (!name) return { msg: '请填写姓名' };
@@ -123,52 +122,52 @@ routes['user/register'] = (body) => {
 	const err = checkMustForms(USER_FIELDS_DEF, forms);
 	if (err) return { msg: err };
 
-	if (db.findOne('user', u => u.USER_MOBILE === mobile)) return { msg: '该手机号已注册，请直接登录' };
+	if (await db.findOne('user', u => u.USER_MOBILE === mobile)) return { msg: '该手机号已注册，请直接登录' };
 
 	const user = {
 		_id: db.nextId('user_'), USER_NAME: name, USER_MOBILE: mobile,
 		USER_STATUS: 1, USER_CHECK_REASON: '', USER_FORMS: formToObj(forms),
 		USER_LOGIN_CNT: 1, USER_LOGIN_TIME: now(), USER_ADD_TIME: now(), USER_OBJ: { desc: '' }
 	};
-	db.insert('user', user);
+	await db.insert('user', user);
 	return { data: { token: auth.issue('user', user._id), user: publicUser(user) } };
 };
 
 // 登录（手机号）
-routes['user/login'] = (body) => {
+routes['user/login'] = async (body) => {
 	const mobile = (body.mobile || '').trim();
-	const user = db.findOne('user', u => u.USER_MOBILE === mobile);
+	const user = await db.findOne('user', u => u.USER_MOBILE === mobile);
 	if (!user) return { msg: '该手机号尚未注册' };
 	if (user.USER_STATUS === 9) return { msg: '账号已被禁用，请联系管理员' };
 	user.USER_LOGIN_CNT = (user.USER_LOGIN_CNT || 0) + 1;
 	user.USER_LOGIN_TIME = now();
-	db.save('user');
+	await db.update('user', user);
 	return { data: { token: auth.issue('user', user._id), user: publicUser(user) } };
 };
 
 // 我的详情
-routes['user/detail'] = (body, sess) => {
-	const user = db.findOne('user', u => u._id === sess.id);
+routes['user/detail'] = async (body, sess) => {
+	const user = await db.findOne('user', u => u._id === sess.id);
 	if (!user) return { code: 401, msg: '请先登录' };
 	return { data: { user: publicUser(user) } };
 };
 
 // 修改资料
-routes['user/edit'] = (body, sess) => {
-	const user = db.findOne('user', u => u._id === sess.id);
+routes['user/edit'] = async (body, sess) => {
+	const user = await db.findOne('user', u => u._id === sess.id);
 	if (!user) return { code: 401, msg: '请先登录' };
 	const forms = body.forms || [];
 	const err = checkMustForms(USER_FIELDS_DEF, forms);
 	if (err) return { msg: err };
 	if (body.name) user.USER_NAME = body.name.trim();
 	user.USER_FORMS = formToObj(forms);
-	db.update('user', user);
+	await db.update('user', user);
 	return { data: { user: publicUser(user) } };
 };
 
 // 首页列表（推荐 + 最新）
-routes['home/list'] = () => {
-	const arr = db.list('news')
+routes['home/list'] = async () => {
+	const arr = (await db.list('news'))
 		.filter(n => n.NEWS_STATUS === 1)
 		.sort((a, b) => (b.NEWS_VOUCH - a.NEWS_VOUCH) || (b.NEWS_ORDER - a.NEWS_ORDER) || (b.NEWS_ADD_TIME - a.NEWS_ADD_TIME))
 		.slice(0, 10)
@@ -177,8 +176,8 @@ routes['home/list'] = () => {
 };
 
 // 资讯列表（cateId 1-4 / search / 分页）
-routes['news/list'] = (body) => {
-	let arr = db.list('news').filter(n => n.NEWS_STATUS === 1);
+routes['news/list'] = async (body) => {
+	let arr = (await db.list('news')).filter(n => n.NEWS_STATUS === 1);
 	if (body.cateId) arr = arr.filter(n => n.NEWS_CATE_ID === body.cateId);
 	if (body.tab) arr = arr.filter(n => (n.NEWS_TAB || '') === body.tab);
 	if (body.search) {
@@ -192,11 +191,11 @@ routes['news/list'] = (body) => {
 };
 
 // 资讯详情（浏览量+1）
-routes['news/view'] = (body) => {
-	const n = db.findOne('news', x => x._id === body.id);
+routes['news/view'] = async (body) => {
+	const n = await db.findOne('news', x => x._id === body.id);
 	if (!n) return { msg: '资讯不存在' };
 	n.NEWS_VIEW_CNT = (n.NEWS_VIEW_CNT || 0) + 1;
-	db.save('news');
+	await db.update('news', n);
 	return {
 		data: Object.assign(newsBrief(n), {
 			NEWS_CONTENT: n.NEWS_CONTENT, time: fmtTime(n.NEWS_ADD_TIME)
@@ -205,17 +204,17 @@ routes['news/view'] = (body) => {
 };
 
 // 关于我们等配置
-routes['setup/get'] = (body) => {
-	const s = db.findOne('setup', x => x.key === (body.key || 'SETUP_CONTENT_ABOUT'));
+routes['setup/get'] = async (body) => {
+	const s = await db.findOne('setup', x => x.key === (body.key || 'SETUP_CONTENT_ABOUT'));
 	return { data: { key: body.key, content: s ? s.content : [] } };
 };
 
 /* ---------- 收藏 ---------- */
 
-routes['fav/update'] = (body, sess) => {
-	const exist = db.findOne('fav', f => f.FAV_USER_ID === sess.id && f.FAV_OID === body.oid);
+routes['fav/update'] = async (body, sess) => {
+	const exist = await db.findOne('fav', f => f.FAV_USER_ID === sess.id && f.FAV_OID === body.oid);
 	if (exist) return { data: { fav: true } };
-	db.insert('fav', {
+	await db.insert('fav', {
 		_id: db.nextId('fav_'), FAV_USER_ID: sess.id, FAV_TITLE: body.title || '',
 		FAV_TYPE: body.type || 'news', FAV_OID: body.oid, FAV_PATH: body.path || '',
 		FAV_ADD_TIME: now()
@@ -223,19 +222,19 @@ routes['fav/update'] = (body, sess) => {
 	return { data: { fav: true } };
 };
 
-routes['fav/del'] = (body, sess) => {
-	const exist = db.findOne('fav', f => f.FAV_USER_ID === sess.id && f.FAV_OID === body.oid);
-	if (exist) db.remove('fav', exist._id);
+routes['fav/del'] = async (body, sess) => {
+	const exist = await db.findOne('fav', f => f.FAV_USER_ID === sess.id && f.FAV_OID === body.oid);
+	if (exist) await db.remove('fav', exist._id);
 	return { data: { fav: false } };
 };
 
-routes['fav/is_fav'] = (body, sess) => {
-	const exist = db.findOne('fav', f => f.FAV_USER_ID === sess.id && f.FAV_OID === body.oid);
+routes['fav/is_fav'] = async (body, sess) => {
+	const exist = await db.findOne('fav', f => f.FAV_USER_ID === sess.id && f.FAV_OID === body.oid);
 	return { data: { fav: !!exist } };
 };
 
-routes['fav/my_list'] = (body, sess) => {
-	const arr = db.list('fav')
+routes['fav/my_list'] = async (body, sess) => {
+	const arr = (await db.list('fav'))
 		.filter(f => f.FAV_USER_ID === sess.id)
 		.sort((a, b) => b.FAV_ADD_TIME - a.FAV_ADD_TIME)
 		.map(f => ({ _id: f._id, FAV_OID: f.FAV_OID, FAV_TYPE: f.FAV_TYPE, FAV_TITLE: f.FAV_TITLE, FAV_PATH: f.FAV_PATH, time: fmtDate(f.FAV_ADD_TIME) }));
@@ -269,44 +268,42 @@ function enrollDetail(e) {
 	});
 }
 
-routes['enroll/list'] = (body) => {
-	let arr = db.list('enroll').filter(e => e.ENROLL_STATUS === 1 || body.all);
+routes['enroll/list'] = async (body) => {
+	let arr = (await db.list('enroll')).filter(e => e.ENROLL_STATUS === 1 || body.all);
 	if (body.cateId) arr = arr.filter(e => e.ENROLL_CATE_ID === body.cateId);
 	if (body.search) {
 		const kw = String(body.search).trim().toLowerCase();
 		arr = arr.filter(e => (e.ENROLL_TITLE + descOf(e)).toLowerCase().includes(kw));
 	}
-	// 排序：默认推荐/报名中优先，再按时间
 	arr.sort((a, b) => (b.ENROLL_VOUCH - a.ENROLL_VOUCH) || (b.ENROLL_ADD_TIME - a.ENROLL_ADD_TIME));
 	return { data: { list: arr.map(enrollBrief) } };
 };
 
-routes['enroll/view'] = (body) => {
-	const e = db.findOne('enroll', x => x._id === body.id);
+routes['enroll/view'] = async (body) => {
+	const e = await db.findOne('enroll', x => x._id === body.id);
 	if (!e) return { msg: '项目不存在' };
 	e.ENROLL_VIEW_CNT = (e.ENROLL_VIEW_CNT || 0) + 1;
-	db.save('enroll');
+	await db.update('enroll', e);
 	return { data: enrollDetail(e) };
 };
 
 // 报名前详情（含我的报名状态、校验）
-routes['enroll/detail_for_join'] = (body, sess) => {
-	const e = db.findOne('enroll', x => x._id === body.id);
+routes['enroll/detail_for_join'] = async (body, sess) => {
+	const e = await db.findOne('enroll', x => x._id === body.id);
 	if (!e) return { msg: '项目不存在' };
 	const data = enrollDetail(e);
 	data.JOIN_FIELDS = JOIN_FIELDS_DEF;
-	const user = db.findOne('user', u => u._id === sess.id);
-	data.myJoin = user ? db.findOne('enroll_join', j =>
+	const user = sess ? await db.findOne('user', u => u._id === sess.id) : null;
+	data.myJoin = user ? await db.findOne('enroll_join', j =>
 		j.ENROLL_JOIN_ENROLL_ID === e._id && j.ENROLL_JOIN_USER_ID === user._id && j.ENROLL_JOIN_STATUS !== 9) || null : null;
 	if (data.myJoin) data.myJoin.statusDesc = joinStatusDesc(data.myJoin.ENROLL_JOIN_STATUS);
-	// 人数校验
 	if (e.ENROLL_MAX_CNT > 0 && (e.ENROLL_JOIN_CNT || 0) >= e.ENROLL_MAX_CNT) data.full = true;
 	return { data };
 };
 
 // 提交报名
-routes['enroll/join'] = (body, sess) => {
-	const e = db.findOne('enroll', x => x._id === body.enrollId);
+routes['enroll/join'] = async (body, sess) => {
+	const e = await db.findOne('enroll', x => x._id === body.enrollId);
 	if (!e) return { msg: '项目不存在' };
 	const st = enrollStatus(e);
 	if (st !== '进行中') return { msg: '该项目当前为「' + st + '」，不能报名' };
@@ -317,32 +314,31 @@ routes['enroll/join'] = (body, sess) => {
 	if (err) return { msg: err };
 
 	// 重复报名校验
-	if (db.findOne('enroll_join', j => j.ENROLL_JOIN_ENROLL_ID === e._id && j.ENROLL_JOIN_USER_ID === sess.id && j.ENROLL_JOIN_STATUS !== 9)) {
+	if (await db.findOne('enroll_join', j => j.ENROLL_JOIN_ENROLL_ID === e._id && j.ENROLL_JOIN_USER_ID === sess.id && j.ENROLL_JOIN_STATUS !== 9)) {
 		return { msg: '您已报名过该项目，请勿重复报名' };
 	}
 
 	const status = e.ENROLL_CHECK_SET === 1 ? 0 : 1; // 需审核 -> 待审
-	const user = db.findOne('user', u => u._id === sess.id);
-	db.insert('enroll_join', {
+	const user = await db.findOne('user', u => u._id === sess.id);
+	await db.insert('enroll_join', {
 		_id: db.nextId('join_'), ENROLL_JOIN_ENROLL_ID: e._id, ENROLL_JOIN_USER_ID: sess.id,
 		ENROLL_JOIN_ENROLL_TITLE: e.ENROLL_TITLE, ENROLL_JOIN_FORMS: forms,
 		ENROLL_JOIN_STATUS: status, ENROLL_JOIN_REASON: '',
 		ENROLL_JOIN_LAST_TIME: now(), ENROLL_JOIN_ADD_TIME: now()
 	});
 	e.ENROLL_JOIN_CNT = (e.ENROLL_JOIN_CNT || 0) + 1;
-	db.save('enroll');
-	writeLog('system', '用户「' + (user ? user.USER_NAME : sess.id) + '」报名「' + e.ENROLL_TITLE + '」', 'enroll');
+	await db.update('enroll', e);
+	await writeLog('system', '用户「' + (user ? user.USER_NAME : sess.id) + '」报名「' + e.ENROLL_TITLE + '」', 'enroll');
 	return { data: { status } };
 };
 
 // 修改报名（按 ENROLL_EDIT_SET 控制可改字段 edit:true）
-routes['enroll/join_edit'] = (body, sess) => {
-	const j = db.findOne('enroll_join', x => x._id === body.id && x.ENROLL_JOIN_USER_ID === sess.id);
+routes['enroll/join_edit'] = async (body, sess) => {
+	const j = await db.findOne('enroll_join', x => x._id === body.id && x.ENROLL_JOIN_USER_ID === sess.id);
 	if (!j) return { msg: '报名记录不存在' };
-	const e = db.findOne('enroll', x => x._id === j.ENROLL_JOIN_ENROLL_ID);
+	const e = await db.findOne('enroll', x => x._id === j.ENROLL_JOIN_ENROLL_ID);
 	if (e && e.ENROLL_EDIT_SET !== 1) return { msg: '该项目不允许修改报名信息' };
 
-	// 仅更新允许编辑的字段
 	const map = formToObj(body.forms || []);
 	j.ENROLL_JOIN_FORMS = j.ENROLL_JOIN_FORMS.map(f => {
 		if (map[f.mark] !== undefined) {
@@ -352,12 +348,12 @@ routes['enroll/join_edit'] = (body, sess) => {
 		return f;
 	});
 	j.ENROLL_JOIN_LAST_TIME = now();
-	db.update('enroll_join', j);
+	await db.update('enroll_join', j);
 	return { data: { ok: 1 } };
 };
 
-routes['enroll/my_join_list'] = (body, sess) => {
-	const arr = db.list('enroll_join')
+routes['enroll/my_join_list'] = async (body, sess) => {
+	const arr = (await db.list('enroll_join'))
 		.filter(j => j.ENROLL_JOIN_USER_ID === sess.id)
 		.sort((a, b) => b.ENROLL_JOIN_ADD_TIME - a.ENROLL_JOIN_ADD_TIME)
 		.map(j => ({
@@ -368,10 +364,10 @@ routes['enroll/my_join_list'] = (body, sess) => {
 	return { data: { list: arr } };
 };
 
-routes['enroll/my_join_detail'] = (body, sess) => {
-	const j = db.findOne('enroll_join', x => x._id === body.id && x.ENROLL_JOIN_USER_ID === sess.id);
+routes['enroll/my_join_detail'] = async (body, sess) => {
+	const j = await db.findOne('enroll_join', x => x._id === body.id && x.ENROLL_JOIN_USER_ID === sess.id);
 	if (!j) return { msg: '报名记录不存在' };
-	const e = db.findOne('enroll', x => x._id === j.ENROLL_JOIN_ENROLL_ID);
+	const e = await db.findOne('enroll', x => x._id === j.ENROLL_JOIN_ENROLL_ID);
 	return {
 		data: {
 			_id: j._id, ENROLL_JOIN_ENROLL_ID: j.ENROLL_JOIN_ENROLL_ID, title: j.ENROLL_JOIN_ENROLL_TITLE,
@@ -384,17 +380,17 @@ routes['enroll/my_join_detail'] = (body, sess) => {
 	};
 };
 
-routes['enroll/my_join_cancel'] = (body, sess) => {
-	const j = db.findOne('enroll_join', x => x._id === body.id && x.ENROLL_JOIN_USER_ID === sess.id);
+routes['enroll/my_join_cancel'] = async (body, sess) => {
+	const j = await db.findOne('enroll_join', x => x._id === body.id && x.ENROLL_JOIN_USER_ID === sess.id);
 	if (!j) return { msg: '报名记录不存在' };
-	const e = db.findOne('enroll', x => x._id === j.ENROLL_JOIN_ENROLL_ID);
+	const e = await db.findOne('enroll', x => x._id === j.ENROLL_JOIN_ENROLL_ID);
 	if (e && e.ENROLL_CANCEL_SET !== 1) return { msg: '该项目不允许取消报名' };
 	j.ENROLL_JOIN_STATUS = 9;
 	j.ENROLL_JOIN_LAST_TIME = now();
-	db.update('enroll_join', j);
+	await db.update('enroll_join', j);
 	if (e) {
 		e.ENROLL_JOIN_CNT = Math.max(0, (e.ENROLL_JOIN_CNT || 0) - 1);
-		db.save('enroll');
+		await db.update('enroll', e);
 	}
 	return { data: { ok: 1 } };
 };
@@ -416,16 +412,16 @@ function requireAdmin(sess) {
 	return sess && sess.type === 'admin';
 }
 
-routes['admin/login'] = (body) => {
+routes['admin/login'] = async (body) => {
 	const name = (body.name || '').trim();
 	const pwd = auth.md5(body.password || '');
-	const admin = db.findOne('admin', a => a.ADMIN_NAME === name && a.ADMIN_PASSWORD === pwd);
+	const admin = await db.findOne('admin', a => a.ADMIN_NAME === name && a.ADMIN_PASSWORD === pwd);
 	if (!admin) return { msg: '账号或密码错误' };
 	if (admin.ADMIN_STATUS === 0) return { msg: '该管理员已被禁用' };
 	admin.ADMIN_LOGIN_CNT = (admin.ADMIN_LOGIN_CNT || 0) + 1;
 	admin.ADMIN_LOGIN_TIME = now();
-	db.save('admin');
-	writeLog(admin.ADMIN_NAME, '登录系统', 'login');
+	await db.update('admin', admin);
+	await writeLog(admin.ADMIN_NAME, '登录系统', 'login');
 	return {
 		data: {
 			token: auth.issue('admin', admin._id),
@@ -434,33 +430,37 @@ routes['admin/login'] = (body) => {
 	};
 };
 
-routes['admin/home'] = (body, sess) => {
+routes['admin/home'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录管理后台' };
+	const [users, news, enrolls, joins, favs] = await Promise.all([
+		db.list('user'), db.list('news'), db.list('enroll'),
+		db.list('enroll_join'), db.list('fav')
+	]);
 	return {
 		data: {
-			userCnt: db.list('user').length,
-			newsCnt: db.list('news').length,
-			enrollCnt: db.list('enroll').length,
-			joinCnt: db.list('enroll_join').filter(j => j.ENROLL_JOIN_STATUS !== 9).length,
-			favCnt: db.list('fav').length,
-			viewCnt: db.list('news').reduce((s, n) => s + (n.NEWS_VIEW_CNT || 0), 0)
+			userCnt: users.length,
+			newsCnt: news.length,
+			enrollCnt: enrolls.length,
+			joinCnt: joins.filter(j => j.ENROLL_JOIN_STATUS !== 9).length,
+			favCnt: favs.length,
+			viewCnt: news.reduce((s, n) => s + (n.NEWS_VIEW_CNT || 0), 0)
 		}
 	};
 };
 
-routes['admin/clear_vouch'] = (body, sess) => {
+routes['admin/clear_vouch'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	for (const n of db.list('news')) { n.NEWS_VIEW_CNT = 0; }
-	db.save('news');
-	writeLog('admin', '清空资讯浏览量');
+	const list = await db.list('news');
+	for (const n of list) { n.NEWS_VIEW_CNT = 0; await db.update('news', n); }
+	await writeLog('admin', '清空资讯浏览量');
 	return { data: { ok: 1 } };
 };
 
 /* --- 管理端：资讯 --- */
 
-routes['admin/news_list'] = (body, sess) => {
+routes['admin/news_list'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	let arr = [...db.list('news')];
+	let arr = [...await db.list('news')];
 	if (body.cateId) arr = arr.filter(n => n.NEWS_CATE_ID === body.cateId);
 	if (body.search) {
 		const kw = String(body.search).trim().toLowerCase();
@@ -482,77 +482,77 @@ function newsBodyToDoc(body, doc) {
 	doc.NEWS_STATUS = body.status === undefined ? 1 : (body.status ? 1 : 0);
 	if (body.desc !== undefined) doc.NEWS_DESC = body.desc;
 	if (body.pic) doc.NEWS_PIC = body.pic;
-	if (body.content) doc.NEWS_CONTENT = body.content; // [{type:'text',val}]
+	if (body.content) doc.NEWS_CONTENT = body.content;
 	return doc;
 }
 
-routes['admin/news_insert'] = (body, sess) => {
+routes['admin/news_insert'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
 	if (!body.title || !String(body.title).trim()) return { msg: '请填写标题' };
 	const doc = newsBodyToDoc(body, {
 		_id: db.nextId('news_'), NEWS_QR: '', NEWS_VIEW_CNT: 0, NEWS_FORMS: [], NEWS_OBJ: {}, NEWS_ADD_TIME: now()
 	});
-	db.insert('news', doc);
-	writeLog('admin', '新增资讯「' + doc.NEWS_TITLE + '」');
+	await db.insert('news', doc);
+	await writeLog('admin', '新增资讯「' + doc.NEWS_TITLE + '」');
 	return { data: { _id: doc._id } };
 };
 
-routes['admin/news_detail'] = (body, sess) => {
+routes['admin/news_detail'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const n = db.findOne('news', x => x._id === body.id);
+	const n = await db.findOne('news', x => x._id === body.id);
 	if (!n) return { msg: '资讯不存在' };
 	return { data: Object.assign({}, n, { time: fmtTime(n.NEWS_ADD_TIME) }) };
 };
 
-routes['admin/news_edit'] = (body, sess) => {
+routes['admin/news_edit'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const n = db.findOne('news', x => x._id === body.id);
+	const n = await db.findOne('news', x => x._id === body.id);
 	if (!n) return { msg: '资讯不存在' };
 	newsBodyToDoc(body, n);
-	db.update('news', n);
-	writeLog('admin', '修改资讯「' + n.NEWS_TITLE + '」');
+	await db.update('news', n);
+	await writeLog('admin', '修改资讯「' + n.NEWS_TITLE + '」');
 	return { data: { ok: 1 } };
 };
 
-routes['admin/news_del'] = (body, sess) => {
+routes['admin/news_del'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	db.remove('news', body.id);
-	writeLog('admin', '删除资讯');
+	await db.remove('news', body.id);
+	await writeLog('admin', '删除资讯');
 	return { data: { ok: 1 } };
 };
 
-routes['admin/news_status'] = (body, sess) => {
+routes['admin/news_status'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const n = db.findOne('news', x => x._id === body.id);
+	const n = await db.findOne('news', x => x._id === body.id);
 	if (!n) return { msg: '资讯不存在' };
 	n.NEWS_STATUS = body.status ? 1 : 0;
-	db.update('news', n);
+	await db.update('news', n);
 	return { data: { ok: 1 } };
 };
 
-routes['admin/news_vouch'] = (body, sess) => {
+routes['admin/news_vouch'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const n = db.findOne('news', x => x._id === body.id);
+	const n = await db.findOne('news', x => x._id === body.id);
 	if (!n) return { msg: '资讯不存在' };
 	n.NEWS_VOUCH = body.vouch ? 1 : 0;
-	db.update('news', n);
+	await db.update('news', n);
 	return { data: { ok: 1 } };
 };
 
-routes['admin/news_sort'] = (body, sess) => {
+routes['admin/news_sort'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const n = db.findOne('news', x => x._id === body.id);
+	const n = await db.findOne('news', x => x._id === body.id);
 	if (!n) return { msg: '资讯不存在' };
 	n.NEWS_ORDER = parseInt(body.order) || 0;
-	db.update('news', n);
+	await db.update('news', n);
 	return { data: { ok: 1 } };
 };
 
 /* --- 管理端：报名项目 --- */
 
-routes['admin/enroll_list'] = (body, sess) => {
+routes['admin/enroll_list'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	let arr = [...db.list('enroll')];
+	let arr = [...await db.list('enroll')];
 	if (body.search) {
 		const kw = String(body.search).trim().toLowerCase();
 		arr = arr.filter(e => e.ENROLL_TITLE.toLowerCase().includes(kw));
@@ -574,7 +574,6 @@ function enrollBodyToDoc(body, doc) {
 	doc.ENROLL_EDIT_SET = body.editSet === undefined ? 1 : (body.editSet ? 1 : 0);
 	doc.ENROLL_VOUCH = body.vouch ? 1 : 0;
 	doc.ENROLL_ORDER = parseInt(body.order) || 0;
-	// 表单三件套 cover/desc/intro
 	let forms = doc.ENROLL_FORMS || [];
 	const setF = (mark, title, type, val) => {
 		let f = forms.find(x => x.mark === mark);
@@ -588,7 +587,7 @@ function enrollBodyToDoc(body, doc) {
 	return doc;
 }
 
-routes['admin/enroll_insert'] = (body, sess) => {
+routes['admin/enroll_insert'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
 	if (!body.title || !String(body.title).trim()) return { msg: '请填写标题' };
 	const t = now();
@@ -596,69 +595,69 @@ routes['admin/enroll_insert'] = (body, sess) => {
 		_id: db.nextId('enroll_'), ENROLL_START: body.start || t - 86400, ENROLL_END: body.end || t + 30 * 86400,
 		ENROLL_OBJ: {}, ENROLL_QR: '', ENROLL_VIEW_CNT: 0, ENROLL_JOIN_CNT: 0, ENROLL_ADD_TIME: t
 	});
-	db.insert('enroll', doc);
-	writeLog('admin', '新增报名项目「' + doc.ENROLL_TITLE + '」');
+	await db.insert('enroll', doc);
+	await writeLog('admin', '新增报名项目「' + doc.ENROLL_TITLE + '」');
 	return { data: { _id: doc._id } };
 };
 
-routes['admin/enroll_detail'] = (body, sess) => {
+routes['admin/enroll_detail'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const e = db.findOne('enroll', x => x._id === body.id);
+	const e = await db.findOne('enroll', x => x._id === body.id);
 	if (!e) return { msg: '项目不存在' };
 	return { data: Object.assign(enrollDetail(e), { ENROLL_START_RAW: e.ENROLL_START, ENROLL_END_RAW: e.ENROLL_END }) };
 };
 
-routes['admin/enroll_edit'] = (body, sess) => {
+routes['admin/enroll_edit'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const e = db.findOne('enroll', x => x._id === body.id);
+	const e = await db.findOne('enroll', x => x._id === body.id);
 	if (!e) return { msg: '项目不存在' };
 	enrollBodyToDoc(body, e);
 	if (body.start) e.ENROLL_START = body.start;
 	if (body.end) e.ENROLL_END = body.end;
-	db.update('enroll', e);
-	writeLog('admin', '修改报名项目「' + e.ENROLL_TITLE + '」');
+	await db.update('enroll', e);
+	await writeLog('admin', '修改报名项目「' + e.ENROLL_TITLE + '」');
 	return { data: { ok: 1 } };
 };
 
-routes['admin/enroll_del'] = (body, sess) => {
+routes['admin/enroll_del'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	db.remove('enroll', body.id);
-	writeLog('admin', '删除报名项目');
+	await db.remove('enroll', body.id);
+	await writeLog('admin', '删除报名项目');
 	return { data: { ok: 1 } };
 };
 
-routes['admin/enroll_status'] = (body, sess) => {
+routes['admin/enroll_status'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const e = db.findOne('enroll', x => x._id === body.id);
+	const e = await db.findOne('enroll', x => x._id === body.id);
 	if (!e) return { msg: '项目不存在' };
 	e.ENROLL_STATUS = body.status ? 1 : 0;
-	db.update('enroll', e);
+	await db.update('enroll', e);
 	return { data: { ok: 1 } };
 };
 
-routes['admin/enroll_vouch'] = (body, sess) => {
+routes['admin/enroll_vouch'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const e = db.findOne('enroll', x => x._id === body.id);
+	const e = await db.findOne('enroll', x => x._id === body.id);
 	if (!e) return { msg: '项目不存在' };
 	e.ENROLL_VOUCH = body.vouch ? 1 : 0;
-	db.update('enroll', e);
+	await db.update('enroll', e);
 	return { data: { ok: 1 } };
 };
 
-routes['admin/enroll_sort'] = (body, sess) => {
+routes['admin/enroll_sort'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const e = db.findOne('enroll', x => x._id === body.id);
+	const e = await db.findOne('enroll', x => x._id === body.id);
 	if (!e) return { msg: '项目不存在' };
 	e.ENROLL_ORDER = parseInt(body.order) || 0;
-	db.update('enroll', e);
+	await db.update('enroll', e);
 	return { data: { ok: 1 } };
 };
 
 /* --- 管理端：报名名单 --- */
 
-routes['admin/enroll_join_list'] = (body, sess) => {
+routes['admin/enroll_join_list'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	let arr = db.list('enroll_join');
+	let arr = await db.list('enroll_join');
 	if (body.enrollId) arr = arr.filter(j => j.ENROLL_JOIN_ENROLL_ID === body.enrollId);
 	if (body.status !== undefined && body.status !== '') arr = arr.filter(j => j.ENROLL_JOIN_STATUS === body.status);
 	if (body.search) {
@@ -679,48 +678,49 @@ routes['admin/enroll_join_list'] = (body, sess) => {
 	return { data: ret };
 };
 
-routes['admin/enroll_join_status'] = (body, sess) => {
+routes['admin/enroll_join_status'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const j = db.findOne('enroll_join', x => x._id === body.id);
+	const j = await db.findOne('enroll_join', x => x._id === body.id);
 	if (!j) return { msg: '记录不存在' };
-	j.ENROLL_JOIN_STATUS = body.status; // 0 待审 / 1 成功 / 99 未过
+	j.ENROLL_JOIN_STATUS = body.status;
 	j.ENROLL_JOIN_REASON = body.reason || '';
 	j.ENROLL_JOIN_LAST_TIME = now();
-	db.update('enroll_join', j);
-	writeLog('admin', '审核报名「' + j.ENROLL_JOIN_ENROLL_TITLE + '」-> ' + joinStatusDesc(body.status));
+	await db.update('enroll_join', j);
+	await writeLog('admin', '审核报名「' + j.ENROLL_JOIN_ENROLL_TITLE + '」-> ' + joinStatusDesc(body.status));
 	return { data: { ok: 1 } };
 };
 
-routes['admin/enroll_join_del'] = (body, sess) => {
+routes['admin/enroll_join_del'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const j = db.findOne('enroll_join', x => x._id === body.id);
+	const j = await db.findOne('enroll_join', x => x._id === body.id);
 	if (j) {
-		const e = db.findOne('enroll', x => x._id === j.ENROLL_JOIN_ENROLL_ID);
-		if (e) { e.ENROLL_JOIN_CNT = Math.max(0, (e.ENROLL_JOIN_CNT || 0) - 1); db.save('enroll'); }
-		db.remove('enroll_join', body.id);
+		const e = await db.findOne('enroll', x => x._id === j.ENROLL_JOIN_ENROLL_ID);
+		if (e) { e.ENROLL_JOIN_CNT = Math.max(0, (e.ENROLL_JOIN_CNT || 0) - 1); await db.update('enroll', e); }
+		await db.remove('enroll_join', body.id);
 	}
-	writeLog('admin', '删除报名记录');
+	await writeLog('admin', '删除报名记录');
 	return { data: { ok: 1 } };
 };
 
-routes['admin/enroll_cancel_join_all'] = (body, sess) => {
+routes['admin/enroll_cancel_join_all'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const list = db.list('enroll_join').filter(j => j.ENROLL_JOIN_ENROLL_ID === body.enrollId && j.ENROLL_JOIN_STATUS !== 9);
+	const all = await db.list('enroll_join');
+	const list = all.filter(j => j.ENROLL_JOIN_ENROLL_ID === body.enrollId && j.ENROLL_JOIN_STATUS !== 9);
 	for (const j of list) {
 		j.ENROLL_JOIN_STATUS = 9;
 		j.ENROLL_JOIN_LAST_TIME = now();
+		await db.update('enroll_join', j);
 	}
-	db.save('enroll_join');
-	const e = db.findOne('enroll', x => x._id === body.enrollId);
-	if (e) { e.ENROLL_JOIN_CNT = 0; db.save('enroll'); }
-	writeLog('admin', '清空报名名单');
+	const e = await db.findOne('enroll', x => x._id === body.enrollId);
+	if (e) { e.ENROLL_JOIN_CNT = 0; await db.update('enroll', e); }
+	await writeLog('admin', '清空报名名单');
 	return { data: { ok: 1, cnt: list.length } };
 };
 
 // 导出 CSV 文本
-routes['admin/enroll_join_export'] = (body, sess) => {
+routes['admin/enroll_join_export'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const arr = db.list('enroll_join').filter(j => j.ENROLL_JOIN_ENROLL_ID === body.enrollId && j.ENROLL_JOIN_STATUS !== 9);
+	const arr = (await db.list('enroll_join')).filter(j => j.ENROLL_JOIN_ENROLL_ID === body.enrollId && j.ENROLL_JOIN_STATUS !== 9);
 	const rows = [['姓名', '性别', '出生日期', '电话号码', '家庭住址', '报名状态', '报名时间']];
 	for (const j of arr) {
 		const o = formToObj(j.ENROLL_JOIN_FORMS);
@@ -731,9 +731,9 @@ routes['admin/enroll_join_export'] = (body, sess) => {
 
 /* --- 管理端：用户 --- */
 
-routes['admin/user_list'] = (body, sess) => {
+routes['admin/user_list'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	let arr = [...db.list('user')];
+	let arr = [...await db.list('user')];
 	if (body.search) {
 		const kw = String(body.search).trim().toLowerCase();
 		arr = arr.filter(u => (u.USER_NAME + u.USER_MOBILE).toLowerCase().includes(kw));
@@ -744,36 +744,40 @@ routes['admin/user_list'] = (body, sess) => {
 	return { data: ret };
 };
 
-routes['admin/user_detail'] = (body, sess) => {
+routes['admin/user_detail'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const u = db.findOne('user', x => x._id === body.id);
+	const u = await db.findOne('user', x => x._id === body.id);
 	if (!u) return { msg: '用户不存在' };
-	const joins = db.list('enroll_join').filter(j => j.ENROLL_JOIN_USER_ID === u._id).length;
-	const favs = db.list('fav').filter(f => f.FAV_USER_ID === u._id).length;
-	return { data: Object.assign(userBrief(u), { joinCnt: joins, favCnt: favs }) };
+	const [joins, favs] = await Promise.all([
+		db.list('enroll_join'), db.list('fav')
+	]);
+	return { data: Object.assign(userBrief(u), {
+		joinCnt: joins.filter(j => j.ENROLL_JOIN_USER_ID === u._id).length,
+		favCnt: favs.filter(f => f.FAV_USER_ID === u._id).length
+	}) };
 };
 
-routes['admin/user_del'] = (body, sess) => {
+routes['admin/user_del'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	db.remove('user', body.id);
-	writeLog('admin', '删除用户');
+	await db.remove('user', body.id);
+	await writeLog('admin', '删除用户');
 	return { data: { ok: 1 } };
 };
 
-routes['admin/user_status'] = (body, sess) => {
+routes['admin/user_status'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const u = db.findOne('user', x => x._id === body.id);
+	const u = await db.findOne('user', x => x._id === body.id);
 	if (!u) return { msg: '用户不存在' };
 	u.USER_STATUS = body.status;
-	db.update('user', u);
+	await db.update('user', u);
 	return { data: { ok: 1 } };
 };
 
-routes['admin/user_export'] = (body, sess) => {
+routes['admin/user_export'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
 	const rows = [['姓名', '手机号', '性别', '生日', '住址', '状态', '登录次数', '注册时间']];
 	const ST = { 0: '待审核', 1: '正常', 8: '未通过', 9: '已禁用' };
-	for (const u of db.list('user')) {
+	for (const u of await db.list('user')) {
 		const f = u.USER_FORMS || {};
 		rows.push([u.USER_NAME, u.USER_MOBILE, f.sex || '', f.birth || '', f.address || '', ST[u.USER_STATUS] || '', u.USER_LOGIN_CNT || 0, fmtDate(u.USER_ADD_TIME)]);
 	}
@@ -790,104 +794,104 @@ function adminBrief(a) {
 	};
 }
 
-routes['admin/mgr_list'] = (body, sess) => {
+routes['admin/mgr_list'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	return { data: { list: db.list('admin').map(adminBrief) } };
+	return { data: { list: (await db.list('admin')).map(adminBrief) } };
 };
 
-routes['admin/mgr_insert'] = (body, sess) => {
+routes['admin/mgr_insert'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
 	const name = (body.name || '').trim();
 	if (!name) return { msg: '请填写账号' };
 	if (!body.password || String(body.password).length < 6) return { msg: '密码至少6位' };
-	if (db.findOne('admin', a => a.ADMIN_NAME === name)) return { msg: '账号已存在' };
-	db.insert('admin', {
+	if (await db.findOne('admin', a => a.ADMIN_NAME === name)) return { msg: '账号已存在' };
+	await db.insert('admin', {
 		_id: db.nextId('admin_'), ADMIN_NAME: name, ADMIN_PASSWORD: auth.md5(body.password),
 		ADMIN_STATUS: 1, ADMIN_TYPE: body.type ? 1 : 0, ADMIN_PHONE: body.phone || '',
 		ADMIN_DESC: body.desc || '', ADMIN_LOGIN_CNT: 0, ADMIN_LOGIN_TIME: 0
 	});
-	writeLog('admin', '新增管理员「' + name + '」');
+	await writeLog('admin', '新增管理员「' + name + '」');
 	return { data: { ok: 1 } };
 };
 
-routes['admin/mgr_detail'] = (body, sess) => {
+routes['admin/mgr_detail'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const a = db.findOne('admin', x => x._id === body.id);
+	const a = await db.findOne('admin', x => x._id === body.id);
 	if (!a) return { msg: '管理员不存在' };
 	return { data: adminBrief(a) };
 };
 
-routes['admin/mgr_edit'] = (body, sess) => {
+routes['admin/mgr_edit'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const a = db.findOne('admin', x => x._id === body.id);
+	const a = await db.findOne('admin', x => x._id === body.id);
 	if (!a) return { msg: '管理员不存在' };
 	a.ADMIN_PHONE = body.phone || '';
 	a.ADMIN_DESC = body.desc || '';
 	a.ADMIN_TYPE = body.type ? 1 : 0;
-	db.update('admin', a);
-	writeLog('admin', '修改管理员「' + a.ADMIN_NAME + '」');
+	await db.update('admin', a);
+	await writeLog('admin', '修改管理员「' + a.ADMIN_NAME + '」');
 	return { data: { ok: 1 } };
 };
 
-routes['admin/mgr_status'] = (body, sess) => {
+routes['admin/mgr_status'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const a = db.findOne('admin', x => x._id === body.id);
+	const a = await db.findOne('admin', x => x._id === body.id);
 	if (!a) return { msg: '管理员不存在' };
 	if (a.ADMIN_NAME === 'admin') return { msg: '内置超管不可禁用' };
 	a.ADMIN_STATUS = body.status ? 1 : 0;
-	db.update('admin', a);
+	await db.update('admin', a);
 	return { data: { ok: 1 } };
 };
 
-routes['admin/mgr_del'] = (body, sess) => {
+routes['admin/mgr_del'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const a = db.findOne('admin', x => x._id === body.id);
+	const a = await db.findOne('admin', x => x._id === body.id);
 	if (!a) return { msg: '管理员不存在' };
 	if (a.ADMIN_NAME === 'admin') return { msg: '内置超管不可删除' };
-	db.remove('admin', body.id);
-	writeLog('admin', '删除管理员「' + a.ADMIN_NAME + '」');
+	await db.remove('admin', body.id);
+	await writeLog('admin', '删除管理员「' + a.ADMIN_NAME + '」');
 	return { data: { ok: 1 } };
 };
 
-routes['admin/mgr_pwd'] = (body, sess) => {
+routes['admin/mgr_pwd'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	const a = db.findOne('admin', x => x._id === body.id);
+	const a = await db.findOne('admin', x => x._id === body.id);
 	if (!a) return { msg: '管理员不存在' };
 	if (!body.password || String(body.password).length < 6) return { msg: '密码至少6位' };
 	a.ADMIN_PASSWORD = auth.md5(body.password);
-	db.update('admin', a);
-	writeLog('admin', '修改管理员「' + a.ADMIN_NAME + '」密码');
+	await db.update('admin', a);
+	await writeLog('admin', '修改管理员「' + a.ADMIN_NAME + '」密码');
 	return { data: { ok: 1 } };
 };
 
 /* --- 管理端：日志 / 配置 --- */
 
-routes['admin/log_list'] = (body, sess) => {
+routes['admin/log_list'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	let arr = [...db.list('log')].sort((a, b) => b.LOG_ADD_TIME - a.LOG_ADD_TIME);
+	let arr = [...await db.list('log')].sort((a, b) => b.LOG_ADD_TIME - a.LOG_ADD_TIME);
 	const ret = paginate(arr, body.page, body.size);
 	ret.list = ret.list.map(l => ({ _id: l._id, LOG_ADMIN_NAME: l.LOG_ADMIN_NAME, LOG_CONTENT: l.LOG_CONTENT, LOG_TYPE: l.LOG_TYPE, time: fmtTime(l.LOG_ADD_TIME) }));
 	return { data: ret };
 };
 
-routes['admin/log_clear'] = (body, sess) => {
+routes['admin/log_clear'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
-	db.list('log').length = 0;
-	db.save('log');
+	const logs = await db.list('log');
+	for (const l of logs) { await db.remove('log', l._id); }
 	return { data: { ok: 1 } };
 };
 
-routes['admin/setup_set'] = (body, sess) => {
+routes['admin/setup_set'] = async (body, sess) => {
 	if (!requireAdmin(sess)) return { code: 401, msg: '请先登录' };
 	const key = body.key || 'SETUP_CONTENT_ABOUT';
-	let s = db.findOne('setup', x => x.key === key);
+	let s = await db.findOne('setup', x => x.key === key);
 	if (!s) {
-		db.insert('setup', { key, content: body.content || [] });
+		await db.insert('setup', { key, content: body.content || [] });
 	} else {
 		s.content = body.content || [];
-		db.save('setup');
+		await db.update('setup', s);
 	}
-	writeLog('admin', '修改系统配置「' + key + '」');
+	await writeLog('admin', '修改系统配置「' + key + '」');
 	return { data: { ok: 1 } };
 };
 

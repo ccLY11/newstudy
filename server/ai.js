@@ -2,9 +2,18 @@
  * DeepSeek AI 服务（从云函数 ai_service.js 移植，仅存服务端）
  */
 const https = require('https');
-const config = require('./config.json');
 
-const AI_CONFIG = config.ai;
+// config.json 为本地可选配置（已 gitignore），云端通过环境变量注入
+let config = {};
+try { config = require('./config.json'); } catch (e) { }
+
+// 优先级：环境变量 > config.json > 内置默认值
+const AI_CONFIG = {
+	apiKey: process.env.DEEPSEEK_API_KEY || (config.ai && config.ai.apiKey) || '',
+	defaultModel: process.env.DEEPSEEK_MODEL || (config.ai && config.ai.defaultModel) || 'deepseek-chat',
+	maxTokens: parseInt(process.env.DEEPSEEK_MAX_TOKENS) || (config.ai && config.ai.maxTokens) || 2000,
+	temperature: parseFloat(process.env.DEEPSEEK_TEMPERATURE) || (config.ai && config.ai.temperature) || 0.7
+};
 const SYSTEM_PROMPT = '你是一个专业的文化教育AI助手，专门帮助用户了解丝绸之路文化、传统文化、古代文学等相关知识。请用简洁明了的语言回答用户问题，回答要准确、有用、友好。';
 
 /** AI 对话（支持多轮上下文），返回 {reply, reasoning, model} */
