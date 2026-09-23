@@ -1,0 +1,190 @@
+[
+ {
+  "_id": "enroll_1",
+  "ENROLL_TITLE": "普通话教学训练班",
+  "ENROLL_STATUS": 1,
+  "ENROLL_CATE_ID": 1,
+  "ENROLL_CATE_NAME": "普通话教学",
+  "ENROLL_CANCEL_SET": 1,
+  "ENROLL_EDIT_SET": 1,
+  "ENROLL_CHECK_SET": 0,
+  "ENROLL_MAX_CNT": 50,
+  "ENROLL_START": 1790077883,
+  "ENROLL_END": 1792756283,
+  "ENROLL_ORDER": 0,
+  "ENROLL_VOUCH": 1,
+  "ENROLL_FORMS": [
+   {
+    "mark": "cover",
+    "title": "封面图片",
+    "type": "image",
+    "val": [
+     "/assets/img/news/cate-training.jpg"
+    ]
+   },
+   {
+    "mark": "desc",
+    "title": "简介",
+    "type": "textarea",
+    "val": "面向社会的普通话发音训练课程，从声母韵母到朗读技巧，帮助学员说好标准普通话。"
+   },
+   {
+    "mark": "intro",
+    "title": "详细介绍",
+    "type": "content",
+    "val": [
+     {
+      "type": "text",
+      "val": "本班由资深普通话测试员授课，每周三、周五晚开课，共 12 课时。课程内容包括：声韵调基础训练、轻声儿化、命题说话、朗读作品精讲等。结业后可参加普通话水平测试模拟。"
+     }
+    ]
+   }
+  ],
+  "ENROLL_OBJ": {},
+  "ENROLL_QR": "",
+  "ENROLL_VIEW_CNT": 159,
+  "ENROLL_JOIN_CNT": 2,
+  "ENROLL_ADD_TIME": 1789300283
+ },
+ {
+  "_id": "enroll_2",
+  "ENROLL_TITLE": "实战检验 · 朗诵比赛",
+  "ENROLL_STATUS": 1,
+  "ENROLL_CATE_ID": 2,
+  "ENROLL_CATE_NAME": "实战检验",
+  "ENROLL_CANCEL_SET": 1,
+  "ENROLL_EDIT_SET": 0,
+  "ENROLL_CHECK_SET": 1,
+  "ENROLL_MAX_CNT": 30,
+  "ENROLL_START": 1790077883,
+  "ENROLL_END": 1792756283,
+  "ENROLL_ORDER": 0,
+  "ENROLL_VOUCH": 1,
+  "ENROLL_FORMS": [
+   {
+    "mark": "cover",
+    "title": "封面图片",
+    "type": "image",
+    "val": [
+     "/assets/img/news/cate-heritage.jpg"
+    ]
+   },
+   {
+    "mark": "desc",
+    "title": "简介",
+    "type": "textarea",
+    "val": "以赛促学，检验普通话学习成果。报名需审核，通过后将电话通知参赛时间与地点。"
+   },
+   {
+    "mark": "intro",
+    "title": "详细介绍",
+    "type": "content",
+    "val": [
+     {
+      "type": "text",
+      "val": "比赛设一、二、三等奖及优秀奖。参赛内容为自选作品朗诵（3 分钟以内），评委将从语音规范、表达技巧、仪态形象三方面评分。本报名需管理员审核通过后方可参赛。"
+     }
+    ]
+   }
+  ],
+  "ENROLL_OBJ": {},
+  "ENROLL_QR": "",
+  "ENROLL_VIEW_CNT": 98,
+  "ENROLL_JOIN_CNT": 1,
+  "ENROLL_ADD_TIME": 1789473083
+ },
+ {
+  "_id": "enroll_3",
+  "ENROLL_TITLE": "AI 助学 一对一辅导",
+  "ENROLL_STATUS": 1,
+  "ENROLL_CATE_ID": 3,
+  "ENROLL_CATE_NAME": "AI助学",
+  "ENROLL_CANCEL_SET": 1,
+  "ENROLL_EDIT_SET": 1,
+  "ENROLL_CHECK_SET": 0,
+  "ENROLL_MAX_CNT": 0,
+  "ENROLL_START": 1790077883,
+  "ENROLL_END": 1792756283,
+  "ENROLL_ORDER": 0,
+  "ENROLL_VOUCH": 0,
+  "ENROLL_FORMS": [
+   {
+    "mark": "cover",
+    "title": "封面图片",
+    "type": "image",
+    "val": [
+     "/assets/img/menu/3.png"
+    ]
+   },
+   {
+    "mark": "desc",
+    "title": "简介",
+    "type": "textarea",
+    "val": "AI 智能助学通道，提交报名后可随时在「AI助学」页面与 AI 助教对话学习。"
+   },
+   {
+    "mark": "intro",
+    "title": "详细介绍",
+    "type": "content",
+    "val": [
+     {
+      "type": "text",
+      "val": "报名成功后，可在小程序「AI 助学」模块随时向 AI 助教提问，涵盖语言学习、文化知识等内容，支持 V3 通用模型与 R1 深度思考模型切换。"
+     }
+    ]
+   }
+  ],
+  "ENROLL_OBJ": {},
+  "ENROLL_QR": "",
+  "ENROLL_VIEW_CNT": 211,
+  "ENROLL_JOIN_CNT": 0,
+  "ENROLL_ADD_TIME": 1789645883
+ },
+ {
+  "_id": "enroll_4",
+  "ENROLL_TITLE": "我要报名 · 文化志愿者",
+  "ENROLL_STATUS": 1,
+  "ENROLL_CATE_ID": 4,
+  "ENROLL_CATE_NAME": "我要报名",
+  "ENROLL_CANCEL_SET": 1,
+  "ENROLL_EDIT_SET": 1,
+  "ENROLL_CHECK_SET": 0,
+  "ENROLL_MAX_CNT": 0,
+  "ENROLL_START": 1790077883,
+  "ENROLL_END": 1792756283,
+  "ENROLL_ORDER": 0,
+  "ENROLL_VOUCH": 0,
+  "ENROLL_FORMS": [
+   {
+    "mark": "cover",
+    "title": "封面图片",
+    "type": "image",
+    "val": [
+     "/assets/img/news/cate-notice.jpg"
+    ]
+   },
+   {
+    "mark": "desc",
+    "title": "简介",
+    "type": "textarea",
+    "val": "文化馆长期招募文化志愿者，参与讲解引导、活动组织、非遗宣传等工作。"
+   },
+   {
+    "mark": "intro",
+    "title": "详细介绍",
+    "type": "content",
+    "val": [
+     {
+      "type": "text",
+      "val": "志愿者要求：热心公益、语言表达良好，每月至少服务 2 次。服务内容包括展厅讲解、观众引导、活动协助等，服务满 40 小时可获志愿服务证书。"
+     }
+    ]
+   }
+  ],
+  "ENROLL_OBJ": {},
+  "ENROLL_QR": "",
+  "ENROLL_VIEW_CNT": 87,
+  "ENROLL_JOIN_CNT": 0,
+  "ENROLL_ADD_TIME": 1789732283
+ }
+]

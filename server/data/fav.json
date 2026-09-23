@@ -1,0 +1,29 @@
+[
+ {
+  "_id": "fav_mue3urk1kx",
+  "FAV_USER_ID": "user_mue3urhzn4",
+  "FAV_TITLE": "????",
+  "FAV_TYPE": "news",
+  "FAV_OID": "news_101",
+  "FAV_PATH": "#/news/detail?id=news_101",
+  "FAV_ADD_TIME": 1790168080
+ },
+ {
+  "_id": "fav_1",
+  "FAV_USER_ID": "user_1",
+  "FAV_TITLE": "丝绸之路文化展览即将开幕",
+  "FAV_TYPE": "news",
+  "FAV_OID": "news_103",
+  "FAV_PATH": "#/news/detail?id=news_103",
+  "FAV_ADD_TIME": 1789991483
+ },
+ {
+  "_id": "fav_2",
+  "FAV_USER_ID": "user_1",
+  "FAV_TITLE": "普通话教学训练班",
+  "FAV_TYPE": "enroll",
+  "FAV_OID": "enroll_1",
+  "FAV_PATH": "#/enroll/detail?id=enroll_1",
+  "FAV_ADD_TIME": 1790077883
+ }
+]

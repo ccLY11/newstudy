@@ -1,0 +1,128 @@
+[
+ {
+  "_id": "join_3",
+  "ENROLL_JOIN_ENROLL_ID": "enroll_2",
+  "ENROLL_JOIN_USER_ID": "user_1",
+  "ENROLL_JOIN_ENROLL_TITLE": "实战检验 · 朗诵比赛",
+  "ENROLL_JOIN_FORMS": [
+   {
+    "mark": "name",
+    "title": "姓名",
+    "type": "text",
+    "val": "张三"
+   },
+   {
+    "mark": "sex",
+    "title": "性别",
+    "type": "select",
+    "val": "男"
+   },
+   {
+    "mark": "birth",
+    "title": "出生日期",
+    "type": "date",
+    "val": "2003-05-12"
+   },
+   {
+    "mark": "phone",
+    "title": "电话号码",
+    "type": "mobile",
+    "val": "13800000001"
+   },
+   {
+    "mark": "address",
+    "title": "家庭住址",
+    "type": "textarea",
+    "val": "辽宁省阜新市中华路47号"
+   }
+  ],
+  "ENROLL_JOIN_STATUS": 0,
+  "ENROLL_JOIN_REASON": "",
+  "ENROLL_JOIN_LAST_TIME": 1790077883,
+  "ENROLL_JOIN_ADD_TIME": 1790077883
+ },
+ {
+  "_id": "join_2",
+  "ENROLL_JOIN_ENROLL_ID": "enroll_1",
+  "ENROLL_JOIN_USER_ID": "user_2",
+  "ENROLL_JOIN_ENROLL_TITLE": "普通话教学训练班",
+  "ENROLL_JOIN_FORMS": [
+   {
+    "mark": "name",
+    "title": "姓名",
+    "type": "text",
+    "val": "李四"
+   },
+   {
+    "mark": "sex",
+    "title": "性别",
+    "type": "select",
+    "val": "女"
+   },
+   {
+    "mark": "birth",
+    "title": "出生日期",
+    "type": "date",
+    "val": "2004-11-03"
+   },
+   {
+    "mark": "phone",
+    "title": "电话号码",
+    "type": "mobile",
+    "val": "13800000002"
+   },
+   {
+    "mark": "address",
+    "title": "家庭住址",
+    "type": "textarea",
+    "val": "辽宁省葫芦岛市龙湾南大街1号"
+   }
+  ],
+  "ENROLL_JOIN_STATUS": 0,
+  "ENROLL_JOIN_REASON": "",
+  "ENROLL_JOIN_LAST_TIME": 1789991483,
+  "ENROLL_JOIN_ADD_TIME": 1789991483
+ },
+ {
+  "_id": "join_1",
+  "ENROLL_JOIN_ENROLL_ID": "enroll_1",
+  "ENROLL_JOIN_USER_ID": "user_1",
+  "ENROLL_JOIN_ENROLL_TITLE": "普通话教学训练班",
+  "ENROLL_JOIN_FORMS": [
+   {
+    "mark": "name",
+    "title": "姓名",
+    "type": "text",
+    "val": "张三"
+   },
+   {
+    "mark": "sex",
+    "title": "性别",
+    "type": "select",
+    "val": "男"
+   },
+   {
+    "mark": "birth",
+    "title": "出生日期",
+    "type": "date",
+    "val": "2003-05-12"
+   },
+   {
+    "mark": "phone",
+    "title": "电话号码",
+    "type": "mobile",
+    "val": "13800000001"
+   },
+   {
+    "mark": "address",
+    "title": "家庭住址",
+    "type": "textarea",
+    "val": "辽宁省阜新市中华路47号"
+   }
+  ],
+  "ENROLL_JOIN_STATUS": 1,
+  "ENROLL_JOIN_REASON": "",
+  "ENROLL_JOIN_LAST_TIME": 1789905083,
+  "ENROLL_JOIN_ADD_TIME": 1789905083
+ }
+]

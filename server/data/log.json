@@ -1,0 +1,58 @@
+[
+ {
+  "_id": "log_mue3wm3ekj",
+  "LOG_ADMIN_NAME": "admin",
+  "LOG_CONTENT": "删除报名记录",
+  "LOG_TYPE": "content",
+  "LOG_ADD_TIME": 1790168167
+ },
+ {
+  "_id": "log_mue3wm38ed",
+  "LOG_ADMIN_NAME": "admin",
+  "LOG_CONTENT": "删除用户",
+  "LOG_TYPE": "content",
+  "LOG_ADD_TIME": 1790168167
+ },
+ {
+  "_id": "log_mue3wm2049",
+  "LOG_ADMIN_NAME": "admin",
+  "LOG_CONTENT": "登录系统",
+  "LOG_TYPE": "login",
+  "LOG_ADD_TIME": 1790168167
+ },
+ {
+  "_id": "log_mue3v6dsg4",
+  "LOG_ADMIN_NAME": "admin",
+  "LOG_CONTENT": "登录系统",
+  "LOG_TYPE": "login",
+  "LOG_ADD_TIME": 1790168100
+ },
+ {
+  "_id": "log_mue3urjalj",
+  "LOG_ADMIN_NAME": "system",
+  "LOG_CONTENT": "用户「????」报名「普通话教学训练班」",
+  "LOG_TYPE": "enroll",
+  "LOG_ADD_TIME": 1790168080
+ },
+ {
+  "_id": "log_mue1lkgjo4",
+  "LOG_ADMIN_NAME": "admin",
+  "LOG_CONTENT": "登录系统",
+  "LOG_TYPE": "login",
+  "LOG_ADD_TIME": 1790164292
+ },
+ {
+  "_id": "log_1",
+  "LOG_ADMIN_NAME": "admin",
+  "LOG_CONTENT": "修改资讯「书法培训班招生通知」",
+  "LOG_TYPE": "content",
+  "LOG_ADD_TIME": 1790077883
+ },
+ {
+  "_id": "log_2",
+  "LOG_ADMIN_NAME": "admin",
+  "LOG_CONTENT": "登录系统",
+  "LOG_TYPE": "login",
+  "LOG_ADD_TIME": 1789991483
+ }
+]

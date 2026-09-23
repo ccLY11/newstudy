@@ -1,0 +1,377 @@
+[
+ {
+  "_id": "news_101",
+  "NEWS_TITLE": "书法培训班招生通知",
+  "NEWS_DESC": "书法培训班现开始招生，课程包括楷书、行书、草书等，适合各年龄段学员。学费优惠中，",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 3,
+  "NEWS_CATE_NAME": "文化教育",
+  "NEWS_TAB": "培训通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 1,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "书法培训班现开始招生，课程包括楷书、行书、草书等，适合各年龄段学员。学费优惠中，名额有限，欢迎报名。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-training.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 44,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1705881600
+ },
+ {
+  "_id": "news_102",
+  "NEWS_TITLE": "关于文化馆开放时间调整的通知",
+  "NEWS_DESC": "根据工作需要，文化馆开放时间调整为周一至周日 9:00-21:00，请广大市民合",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 1,
+  "NEWS_CATE_NAME": "公告通知",
+  "NEWS_TAB": "重要通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 1,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "根据工作需要，文化馆开放时间调整为周一至周日 9:00-21:00，请广大市民合理安排参观时间。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-notice.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 42,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1705708800
+ },
+ {
+  "_id": "news_103",
+  "NEWS_TITLE": "丝绸之路文化展览即将开幕",
+  "NEWS_DESC": "丝绸之路文化展览将于1月25日正式开幕，展出珍贵文物和艺术品，欢迎广大市民前来参",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 2,
+  "NEWS_CATE_NAME": "丝路小程序介绍",
+  "NEWS_TAB": "活动通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 1,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "丝绸之路文化展览将于1月25日正式开幕，展出珍贵文物和艺术品，欢迎广大市民前来参观。展览为期一个月。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/silk-road/history.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 91,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1705536000
+ },
+ {
+  "_id": "news_104",
+  "NEWS_TITLE": "文化馆管理制度更新",
+  "NEWS_DESC": "文化馆管理制度已更新，新制度将于2月1日正式实施，请相关人员认真学习并严格执行。",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 1,
+  "NEWS_CATE_NAME": "公告通知",
+  "NEWS_TAB": "政策通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 0,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "文化馆管理制度已更新，新制度将于2月1日正式实施，请相关人员认真学习并严格执行。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-hall.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 115,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1705363200
+ },
+ {
+  "_id": "news_105",
+  "NEWS_TITLE": "传统文化讲座系列安排",
+  "NEWS_DESC": "每周六下午2点将举办传统文化讲座，邀请知名学者分享中华文化精髓，免费参加，场地有",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 3,
+  "NEWS_CATE_NAME": "文化教育",
+  "NEWS_TAB": "活动通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 0,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "每周六下午2点将举办传统文化讲座，邀请知名学者分享中华文化精髓，免费参加，场地有限需提前预约。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-heritage.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 133,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1705190400
+ },
+ {
+  "_id": "news_106",
+  "NEWS_TITLE": "非遗传承人培训计划启动",
+  "NEWS_DESC": "为传承非物质文化遗产，将举办非遗传承人培训，培养新一代传承人。报名截止1月30日",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 3,
+  "NEWS_CATE_NAME": "文化教育",
+  "NEWS_TAB": "培训通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 1,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "为传承非物质文化遗产，将举办非遗传承人培训，培养新一代传承人。报名截止1月30日。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-heritage.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 57,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1705017600
+ },
+ {
+  "_id": "news_107",
+  "NEWS_TITLE": "文化馆疫情防控措施公告",
+  "NEWS_DESC": "为保障广大市民健康安全，文化馆将继续严格执行疫情防控措施，请配合工作人员进行体温",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 1,
+  "NEWS_CATE_NAME": "公告通知",
+  "NEWS_TAB": "重要通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 0,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "为保障广大市民健康安全，文化馆将继续严格执行疫情防控措施，请配合工作人员进行体温检测和健康码查验。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-notice.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 192,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1704844800
+ },
+ {
+  "_id": "news_108",
+  "NEWS_TITLE": "文物保护政策解读会议通知",
+  "NEWS_DESC": "最新文物保护政策已发布，文化馆将于1月15日下午2点组织政策解读会议，请相关人员",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 1,
+  "NEWS_CATE_NAME": "公告通知",
+  "NEWS_TAB": "政策通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 0,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "最新文物保护政策已发布，文化馆将于1月15日下午2点组织政策解读会议，请相关人员准时参加。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-hall.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 162,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1704672000
+ },
+ {
+  "_id": "news_109",
+  "NEWS_TITLE": "春节文化活动预告",
+  "NEWS_DESC": "春节期间将举办丰富多彩的文化活动，包括传统手工艺展示、民俗表演、灯谜竞猜等，欢迎",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 1,
+  "NEWS_CATE_NAME": "公告通知",
+  "NEWS_TAB": "活动通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 0,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "春节期间将举办丰富多彩的文化活动，包括传统手工艺展示、民俗表演、灯谜竞猜等，欢迎全家参与。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-training.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 78,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1704499200
+ },
+ {
+  "_id": "news_110",
+  "NEWS_TITLE": "文化志愿者培训通知",
+  "NEWS_DESC": "文化志愿者培训将于下月开始，培训内容包括文化知识、服务技能、应急处理等，欢迎热心",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 3,
+  "NEWS_CATE_NAME": "文化教育",
+  "NEWS_TAB": "培训通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 0,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "文化志愿者培训将于下月开始，培训内容包括文化知识、服务技能、应急处理等，欢迎热心市民报名。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-training.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 185,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1704326400
+ },
+ {
+  "_id": "news_111",
+  "NEWS_TITLE": "文化馆设施维护通知",
+  "NEWS_DESC": "文化馆将于本周进行设施维护，部分展厅可能临时关闭，给您带来的不便敬请谅解。具体关",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 1,
+  "NEWS_CATE_NAME": "公告通知",
+  "NEWS_TAB": "重要通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 0,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "文化馆将于本周进行设施维护，部分展厅可能临时关闭，给您带来的不便敬请谅解。具体关闭时间见现场公告。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-hall.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 90,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1704153600
+ },
+ {
+  "_id": "news_112",
+  "NEWS_TITLE": "文化产业发展扶持政策",
+  "NEWS_DESC": "支持文化产业发展的相关政策已出台，文化馆将积极落实相关政策，为文化企业提供服务和",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 1,
+  "NEWS_CATE_NAME": "公告通知",
+  "NEWS_TAB": "政策通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 0,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "支持文化产业发展的相关政策已出台，文化馆将积极落实相关政策，为文化企业提供服务和支持。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-notice.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 59,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1703721600
+ },
+ {
+  "_id": "news_113",
+  "NEWS_TITLE": "「丝路文化」小程序功能上线公告",
+  "NEWS_DESC": "丝路文化小程序全新上线，涵盖丝绸之路介绍、文化教育、普通话教学、在线报名、AI助",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 2,
+  "NEWS_CATE_NAME": "丝路小程序介绍",
+  "NEWS_TAB": "活动通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 1,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "丝路文化小程序全新上线，涵盖丝绸之路介绍、文化教育、普通话教学、在线报名、AI助学等模块，欢迎大家体验使用。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/silk-road/history.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 198,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1703462400
+ },
+ {
+  "_id": "news_114",
+  "NEWS_TITLE": "冬季消防安全提示",
+  "NEWS_DESC": "冬季天干物燥，是火灾高发期。请广大市民注意用火用电安全，离开场馆前请确认电源已关",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 4,
+  "NEWS_CATE_NAME": "安全教育",
+  "NEWS_TAB": "政策通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 0,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "冬季天干物燥，是火灾高发期。请广大市民注意用火用电安全，离开场馆前请确认电源已关闭，共同维护场馆安全环境。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-hall.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 118,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1703203200
+ },
+ {
+  "_id": "news_115",
+  "NEWS_TITLE": "安全知识教育培训活动通知",
+  "NEWS_DESC": "为进一步提高全员安全意识，本馆定于下周三下午组织消防安全知识培训，包含灭火器实操",
+  "NEWS_STATUS": 1,
+  "NEWS_CATE_ID": 4,
+  "NEWS_CATE_NAME": "安全教育",
+  "NEWS_TAB": "活动通知",
+  "NEWS_ORDER": 0,
+  "NEWS_VOUCH": 0,
+  "NEWS_CONTENT": [
+   {
+    "type": "text",
+    "val": "为进一步提高全员安全意识，本馆定于下周三下午组织消防安全知识培训，包含灭火器实操演练，请全体员工准时参加。"
+   }
+  ],
+  "NEWS_PIC": [
+   "/assets/img/news/cate-training.jpg"
+  ],
+  "NEWS_QR": "",
+  "NEWS_VIEW_CNT": 181,
+  "NEWS_FORMS": [],
+  "NEWS_OBJ": {},
+  "NEWS_ADD_TIME": 1703030400
+ }
+]

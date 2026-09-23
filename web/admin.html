@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>红色文化馆 · 管理后台</title>
+	<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+	<!-- 登录页 -->
+	<div id="loginView" class="login-wrap" hidden>
+		<div class="login-card">
+			<div class="login-brand">红色文化馆</div>
+			<div class="login-sub">管 理 后 台</div>
+			<div class="form-item">
+				<label>账号</label>
+				<input type="text" id="loginName" class="ipt" placeholder="请输入管理员账号" autocomplete="username">
+			</div>
+			<div class="form-item">
+				<label>密码</label>
+				<input type="password" id="loginPwd" class="ipt" placeholder="请输入密码" autocomplete="current-password">
+			</div>
+			<button class="btn primary block" id="btnLogin">登 录</button>
+			<div class="login-hint">默认账号：admin / 123456</div>
+		</div>
+	</div>
+
+	<!-- 主框架：左侧侧边栏 + 右侧主区 -->
+	<div id="appView" class="layout" hidden>
+		<aside class="sidebar">
+			<div class="brand">
+				<div class="brand-name">红色文化馆</div>
+				<div class="brand-sub">管理后台</div>
+			</div>
+			<nav class="menu" id="menu"></nav>
+		</aside>
+		<div class="main">
+			<header class="topbar">
+				<h1 id="pageTitle">首页概览</h1>
+				<div class="topbar-right">
+					<span id="adminName" class="admin-name"></span>
+					<a id="btnLogout" class="logout">退出登录</a>
+				</div>
+			</header>
+			<main class="page-body" id="pageBody"></main>
+		</div>
+	</div>
+
+	<!-- 通用弹窗 -->
+	<div id="modalMask" class="modal-mask" hidden>
+		<div class="modal-box" id="modalBox"></div>
+	</div>
+
+	<div id="toastBox" class="toast"></div>
+
+	<script src="js/admin.js"></script>
+</body>
+</html>

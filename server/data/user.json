@@ -1,0 +1,59 @@
+[
+ {
+  "_id": "user_1",
+  "USER_NAME": "张三",
+  "USER_MOBILE": "13800000001",
+  "USER_PASSWORD": "",
+  "USER_STATUS": 1,
+  "USER_CHECK_REASON": "",
+  "USER_FORMS": {
+   "sex": "男",
+   "birth": "2003-05-12",
+   "address": "辽宁省阜新市中华路47号"
+  },
+  "USER_LOGIN_CNT": 3,
+  "USER_LOGIN_TIME": 1790160683,
+  "USER_ADD_TIME": 1787572283,
+  "USER_OBJ": {
+   "desc": ""
+  }
+ },
+ {
+  "_id": "user_2",
+  "USER_NAME": "李四",
+  "USER_MOBILE": "13800000002",
+  "USER_PASSWORD": "",
+  "USER_STATUS": 1,
+  "USER_CHECK_REASON": "",
+  "USER_FORMS": {
+   "sex": "女",
+   "birth": "2004-11-03",
+   "address": "辽宁省葫芦岛市龙湾南大街1号"
+  },
+  "USER_LOGIN_CNT": 1,
+  "USER_LOGIN_TIME": 1789732283,
+  "USER_ADD_TIME": 1788436283,
+  "USER_OBJ": {
+   "desc": ""
+  }
+ },
+ {
+  "_id": "user_3",
+  "USER_NAME": "王五",
+  "USER_MOBILE": "13800000003",
+  "USER_PASSWORD": "",
+  "USER_STATUS": 0,
+  "USER_CHECK_REASON": "",
+  "USER_FORMS": {
+   "sex": "男",
+   "birth": "2002-08-21",
+   "address": "辽宁省沈阳市和平区文化路10号"
+  },
+  "USER_LOGIN_CNT": 1,
+  "USER_LOGIN_TIME": 1789300283,
+  "USER_ADD_TIME": 1789300283,
+  "USER_OBJ": {
+   "desc": ""
+  }
+ }
+]
