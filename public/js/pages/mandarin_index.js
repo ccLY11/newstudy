@@ -2,9 +2,7 @@
 import { esc } from '../ui.js';
 import { go } from '../app.js';
 
-// 视频外链地址：部署到 GitHub 时替换为你的云存储地址（如 CDN、对象存储等）
-// 本地开发可设为空字符串 '' 并将视频放回 web/assets/video/ 目录
-const VIDEO_BASE = 'https://你的云存储地址/video/';
+const VIDEO_BASE = '/assets/video/';
 
 export const COURSES = [
 	{
@@ -45,3 +43,4 @@ export async function render(root) {
 		el.onclick = () => go('mandarin/video', { id: el.dataset.id });
 	});
 }
+
