@@ -20,8 +20,6 @@ const ROUTES = {
 	'culture/detail': { title: '文化教育详情', mod: 'culture_detail.js' },
 	'mandarin/index': { title: '普通话教学', mod: 'mandarin_index.js' },
 	'mandarin/video': { title: '视频播放', mod: 'mandarin_video.js' },
-	'online/index': { title: '线上课程', mod: 'online_index.js' },
-	'online/video': { title: '视频播放', mod: 'online_video.js' },
 
 	'enroll/index': { title: '报名', tab: 'enroll', mod: 'enroll_index.js' },
 	'enroll/detail': { title: '报名详情', mod: 'enroll_detail.js' },
@@ -50,12 +48,12 @@ let currentMod = null;
 let currentKey = '';
 
 function parseHash() {
-	const h = location.hash.replace(/^#/?/, '');
+	const h = location.hash.replace(/^#\/?/, '');
 	const [path, qs] = h.split('?');
 	const params = {};
 	if (qs) for (const kv of qs.split('&')) {
-	 const [k, v] = kv.split('=');
-	 params[decodeURIComponent(k)] = decodeURIComponent(v || '');
+		const [k, v] = kv.split('=');
+		params[decodeURIComponent(k)] = decodeURIComponent(v || '');
 	}
 	return { path: path || 'home', params };
 }
@@ -64,10 +62,10 @@ function renderTabbar(tab) {
 	if (!tab) { tabbar.classList.add('hidden'); return; }
 	tabbar.classList.remove('hidden');
 	document.querySelectorAll('.tab-item').forEach(a => {
-	 const on = a.dataset.tab === tab;
-	 a.classList.toggle('active', on);
-	 const img = a.querySelector('.tab-icon');
-	 const base = '/assets/img/tabbar/';
+		const on = a.dataset.tab === tab;
+		a.classList.toggle('active', on);
+		const img = a.querySelector('.tab-icon');
+		const base = '/assets/img/tabbar/';
 	 const map = { home: 'home', news: 'news', enroll: 'enroll', my: 'my' };
 	 img.src = base + map[a.dataset.tab] + (on ? '_cur' : '') + '.png';
 	});
@@ -75,31 +73,29 @@ function renderTabbar(tab) {
 
 async function router() {
 	const { path, params } = parseHash();
-	const route = ROUTES[path] || ROUTES['default'];
-	currentKey = path;
+ const route = ROUTES[path] || ROUTES['default'];
+	 currentKey = path;
 
-	// 导航栏
 	navTitle.textContent = route.title;
 	navEl.classList.toggle('has-back', !route.tab && path !== 'home' && path !== 'default');
 	navEl.classList.toggle('has-home', !route.tab);
 	renderTabbar(route.tab);
 
-	// 离开页面前暂停所有音视频，避免后台继续播放
 	pageEl.querySelectorAll('video, audio').forEach(m => { try { m.pause(); m.removeAttribute('src'); m.load(); } catch(e){} });
 	document.querySelectorAll('.video-fullscreen').forEach(el => el.remove());
-	pageEl.innerHTML = '';
-	window.scrollTo(0, 0);
-	try {
+	 pageEl.innerHTML = '';
+	 window.scrollTo(0, 0);
+	 try {
 	 const mod = await import('./pages/' + route.mod);
-	 if (parseHash().path !== path) return; // 已跳转其他页
+	 if (parseHash().path !== path) return;
 	 currentMod = mod;
 	 await mod.render(pageEl, params);
 	} catch (e) {
 	 if (e && e.message && /Failed to fetch|loading/i.test(e.message)) {
-	 pageEl.innerHTML = '<div class="empty"><div class="ico">⚠️</div>页面加载失败，请刷新重试</div>';
+		 pageEl.innerHTML = '<div class="empty"><div class="ico">⚠️</div>页面加载失败，请刷新重试</div>';
 	 } else {
-	 pageEl.innerHTML = '<div class="empty"><div class="ico">⚠️</div>' + (e.message || '页面加载失败') + '</div>';
-	 console.error('[route]', path, e);
+		 pageEl.innerHTML = '<div class="empty"><div class="ico">⚠️</div>' + (e.message || '页面加载失败') + '</div>';
+		 console.error('[route]', path, e);
 	 }
 	}
 }
@@ -107,17 +103,15 @@ async function router() {
 navBack.onclick = () => history.back();
 navHome.onclick = () => { location.hash = '#/home'; };
 
-// 401 统一处理：清除登录态
 window.addEventListener('unhandledrejection', e => {
- if (e.reason && e.reason.code === 401) { store.logout(); }
+	if (e.reason && e.reason.code === 401) { store.logout(); }
 });
 
 window.addEventListener('hashchange', router);
 router();
 
-/** 页面内部跳转 */
 export function go(path, params = {}) {
 	const qs = Object.keys(params).filter(k => params[k] !== undefined && params[k] !== '')
 		.map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k])).join('&');
-	location.hash = '#/' + path + (qs ? '?' + qs : '');
+	 location.hash = '#/' + path + (qs ? '?' + qs : '');
 }
