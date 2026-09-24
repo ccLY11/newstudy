@@ -13,7 +13,7 @@ const seed = require('./seed');
 const api = require('./api');
 const db = require('./db');
 
-const WEB_DIR = path.join(__dirname, '..', 'web');
+const WEB_DIR = path.join(__dirname, '..', 'public');
 
 // 初始化数据库 + 种子数据（异步）
 (async () => {

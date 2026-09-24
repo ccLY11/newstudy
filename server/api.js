@@ -130,7 +130,7 @@ routes['user/register'] = async (body) => {
 		USER_LOGIN_CNT: 1, USER_LOGIN_TIME: now(), USER_ADD_TIME: now(), USER_OBJ: { desc: '' }
 	};
 	await db.insert('user', user);
-	return { data: { token: auth.issue('user', user._id), user: publicUser(user) } };
+	return { data: { token: await auth.issue('user', user._id), user: publicUser(user) } };
 };
 
 // 登录（手机号）
@@ -142,7 +142,7 @@ routes['user/login'] = async (body) => {
 	user.USER_LOGIN_CNT = (user.USER_LOGIN_CNT || 0) + 1;
 	user.USER_LOGIN_TIME = now();
 	await db.update('user', user);
-	return { data: { token: auth.issue('user', user._id), user: publicUser(user) } };
+	return { data: { token: await auth.issue('user', user._id), user: publicUser(user) } };
 };
 
 // 我的详情
@@ -424,7 +424,7 @@ routes['admin/login'] = async (body) => {
 	await writeLog(admin.ADMIN_NAME, '登录系统', 'login');
 	return {
 		data: {
-			token: auth.issue('admin', admin._id),
+			token: await auth.issue('admin', admin._id),
 			admin: { _id: admin._id, ADMIN_NAME: admin.ADMIN_NAME, ADMIN_TYPE: admin.ADMIN_TYPE, ADMIN_DESC: admin.ADMIN_DESC }
 		}
 	};
@@ -902,7 +902,7 @@ async function dispatch(pathname, body, token) {
 	const handler = routes[route];
 	if (!handler) return { ok: 0, msg: '接口不存在: ' + route };
 
-	let sess = auth.verify(token);
+	let sess = await auth.verify(token);
 	if (sess && sess.expire !== undefined && sess.expire < Date.now()) sess = null;
 
 	try {

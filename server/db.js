@@ -19,15 +19,18 @@ let mongoClient = null;
 /* ---------- 初始化 ---------- */
 
 async function init() {
+	if (global._mongoDb) { mongoDb = global._mongoDb; return; }
 	if (!MONGODB_URI) {
 		console.log('[db] 使用本地 JSON 文件存储');
 		return;
 	}
 	try {
 		const { MongoClient } = require('mongodb');
-		mongoClient = new MongoClient(MONGODB_URI);
-		await mongoClient.connect();
-		mongoDb = mongoClient.db(DB_NAME);
+		const client = new MongoClient(MONGODB_URI);
+		await client.connect();
+		mongoDb = client.db(DB_NAME);
+		global._mongoClient = client;
+		global._mongoDb = mongoDb;
 		console.log('[db] MongoDB 已连接，数据库:', DB_NAME);
 	} catch (e) {
 		console.error('[db] MongoDB 连接失败，回退到 JSON 文件:', e.message);
@@ -36,7 +39,7 @@ async function init() {
 }
 
 function useMongo() {
-	return !!mongoDb;
+	return !!(global._mongoDb || mongoDb);
 }
 
 /* ---------- 内部工具 ---------- */

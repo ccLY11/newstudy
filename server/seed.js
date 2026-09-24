@@ -202,6 +202,8 @@ SEED.setup = () => ([
 
 /** 启动时检查全部集合，缺失的生成种子数据（异步，支持 MongoDB） */
 async function initAll() {
+	if (global._seeded) return;
+	global._seeded = true;
 	for (const key of Object.keys(SEED)) {
 		const has = await db.exists(key);
 		if (!has) {

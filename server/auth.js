@@ -1,62 +1,42 @@
 /**
  * 鉴权：简单 token（用户端 / 管理端）
- * token = md5(类型+id+时间戳+随机)，内存 Map + sessions.json 持久化（重启不掉线）
+ * token = md5(类型+id+时间戳+随机)，存入 MongoDB（serverless 友好，无状态）
  */
 const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
+const db = require('./db');
 
-const SESSION_FILE = path.join(__dirname, 'data', '_sessions.json');
 const EXPIRE = 24 * 3600 * 1000; // 24 小时
-
-let sessions = {}; // token -> { type, id, expire }
 
 function md5(str) {
 	return crypto.createHash('md5').update(str, 'utf8').digest('hex');
 }
 
-function loadSessions() {
-	try {
-		if (fs.existsSync(SESSION_FILE)) sessions = JSON.parse(fs.readFileSync(SESSION_FILE, 'utf8'));
-	} catch (e) { sessions = {}; }
-}
-
-function persist() {
-	try {
-		const dir = path.dirname(SESSION_FILE);
-		if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-		fs.writeFileSync(SESSION_FILE, JSON.stringify(sessions), 'utf8');
-	} catch (e) { }
-}
-
-function issue(type, id) {
+async function issue(type, id) {
 	const token = md5(type + id + Date.now() + Math.random());
-	sessions[token] = { type, id, expire: Date.now() + EXPIRE };
-	persist();
+	await db.insert('session', {
+		_id: db.nextId('session_'),
+		token, type, id,
+		expire: Date.now() + EXPIRE
+	});
 	return token;
 }
 
 /** 校验，返回 {type,id} 或 null */
-function verify(token, type) {
+async function verify(token, type) {
 	if (!token) return null;
-	const s = sessions[token];
+	const s = await db.findOne('session', x => x.token === token);
 	if (!s) return null;
 	if (s.expire < Date.now()) {
-		delete sessions[token];
-		persist();
+		await db.remove('session', s._id);
 		return null;
 	}
 	if (type && s.type !== type) return null;
 	return { type: s.type, id: s.id };
 }
 
-function revoke(token) {
-	if (sessions[token]) {
-		delete sessions[token];
-		persist();
-	}
+async function revoke(token) {
+	const s = await db.findOne('session', x => x.token === token);
+	if (s) await db.remove('session', s._id);
 }
-
-loadSessions();
 
 module.exports = { issue, verify, revoke, md5 };
