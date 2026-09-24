@@ -50,12 +50,12 @@ let currentMod = null;
 let currentKey = '';
 
 function parseHash() {
-	const h = location.hash.replace(/^#\/?/, '');
+	const h = location.hash.replace(/^#/?/, '');
 	const [path, qs] = h.split('?');
 	const params = {};
 	if (qs) for (const kv of qs.split('&')) {
-		const [k, v] = kv.split('=');
-		params[decodeURIComponent(k)] = decodeURIComponent(v || '');
+	 const [k, v] = kv.split('=');
+	 params[decodeURIComponent(k)] = decodeURIComponent(v || '');
 	}
 	return { path: path || 'home', params };
 }
@@ -64,12 +64,12 @@ function renderTabbar(tab) {
 	if (!tab) { tabbar.classList.add('hidden'); return; }
 	tabbar.classList.remove('hidden');
 	document.querySelectorAll('.tab-item').forEach(a => {
-		const on = a.dataset.tab === tab;
-		a.classList.toggle('active', on);
-		const img = a.querySelector('.tab-icon');
-		const base = '/assets/img/tabbar/';
-		const map = { home: 'home', news: 'news', enroll: 'enroll', my: 'my' };
-		img.src = base + map[a.dataset.tab] + (on ? '_cur' : '') + '.png';
+	 const on = a.dataset.tab === tab;
+	 a.classList.toggle('active', on);
+	 const img = a.querySelector('.tab-icon');
+	 const base = '/assets/img/tabbar/';
+	 const map = { home: 'home', news: 'news', enroll: 'enroll', my: 'my' };
+	 img.src = base + map[a.dataset.tab] + (on ? '_cur' : '') + '.png';
 	});
 }
 
@@ -84,21 +84,23 @@ async function router() {
 	navEl.classList.toggle('has-home', !route.tab);
 	renderTabbar(route.tab);
 
-	// 页面加载
+	// 离开页面前暂停所有音视频，避免后台继续播放
+	pageEl.querySelectorAll('video, audio').forEach(m => { try { m.pause(); m.removeAttribute('src'); m.load(); } catch(e){} });
+	document.querySelectorAll('.video-fullscreen').forEach(el => el.remove());
 	pageEl.innerHTML = '';
 	window.scrollTo(0, 0);
 	try {
-		const mod = await import('./pages/' + route.mod);
-		if (parseHash().path !== path) return; // 已跳转其他页
-		currentMod = mod;
-		await mod.render(pageEl, params);
+	 const mod = await import('./pages/' + route.mod);
+	 if (parseHash().path !== path) return; // 已跳转其他页
+	 currentMod = mod;
+	 await mod.render(pageEl, params);
 	} catch (e) {
-		if (e && e.message && /Failed to fetch|loading/i.test(e.message)) {
-			pageEl.innerHTML = '<div class="empty"><div class="ico">⚠️</div>页面加载失败，请刷新重试</div>';
-		} else {
-			pageEl.innerHTML = '<div class="empty"><div class="ico">⚠️</div>' + (e.message || '页面加载失败') + '</div>';
-			console.error('[route]', path, e);
-		}
+	 if (e && e.message && /Failed to fetch|loading/i.test(e.message)) {
+	 pageEl.innerHTML = '<div class="empty"><div class="ico">⚠️</div>页面加载失败，请刷新重试</div>';
+	 } else {
+	 pageEl.innerHTML = '<div class="empty"><div class="ico">⚠️</div>' + (e.message || '页面加载失败') + '</div>';
+	 console.error('[route]', path, e);
+	 }
 	}
 }
 
@@ -107,7 +109,7 @@ navHome.onclick = () => { location.hash = '#/home'; };
 
 // 401 统一处理：清除登录态
 window.addEventListener('unhandledrejection', e => {
-	if (e.reason && e.reason.code === 401) { store.logout(); }
+ if (e.reason && e.reason.code === 401) { store.logout(); }
 });
 
 window.addEventListener('hashchange', router);
