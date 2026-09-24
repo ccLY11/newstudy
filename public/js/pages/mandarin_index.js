@@ -2,7 +2,9 @@
 import { esc } from '../ui.js';
 import { go } from '../app.js';
 
+
 const VIDEO_BASE = '/assets/video/';
+
 
 export const COURSES = [
 	{
@@ -17,11 +19,12 @@ export const COURSES = [
 		id: 2,
 		title: '声调练习',
 		cover: '/assets/img/mandarin-cover.jpg',
-		video: VIDEO_BASE + 'mandarin_2.mp4',
+		video: VIDEO_BASE + 'mandarin_1.mp4',
 		description: '掌握普通话四声调的正确发音与对比训练',
 		duration: '06:29'
 	}
 ];
+
 
 export async function render(root) {
 	root.innerHTML = `
@@ -43,4 +46,6 @@ export async function render(root) {
 		el.onclick = () => go('mandarin/video', { id: el.dataset.id });
 	});
 }
+
+
 
