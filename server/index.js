@@ -105,8 +105,8 @@ const server = http.createServer((req, res) => {
 	serveStatic(req, res, pathname);
 });
 
-// Render 等云平台会注入 PORT 环境变量，必须监听它
-const PORT = process.env.PORT || config.port || 3000;
+// 云平台（Hugging Face Spaces / Render）会注入 PORT，默认 7860（HF Spaces 要求）
+const PORT = process.env.PORT || config.port || 7860;
 server.listen(PORT, () => {
 	console.log('========================================');
 	console.log('  红色文化馆网页版已启动');
