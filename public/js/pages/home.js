@@ -4,7 +4,7 @@ import { esc, empty } from '../ui.js';
 import { go } from '../app.js';
 
 const SWIPER_LIST = [
-	{ image: '/assets/img/swiper/微信图片_20260922114432_236_8.jpg', title: '数智助学 逐梦同行' },
+	{ image: '/assets/img/swiper/swiper_zhumeng_16_10.jpg', title: '数智助学 逐梦同行' },
 	{ image: '/assets/img/swiper/s2.jpg', title: '丝绸之路展览' },
 	{ image: '/assets/img/swiper/s3.jpg', title: '非遗文化传承' },
 	{ image: '/assets/img/swiper/s4.jpg', title: '文化教育活动' },
