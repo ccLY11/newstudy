@@ -97,7 +97,8 @@ export async function render(root) {
 						${n.NEWS_VOUCH ? '<span class="tag red">荐</span>' : ''}
 						<span>${esc(n.NEWS_CATE_NAME || '')}</span><span>·</span><span>${esc(n.time)}</span>
 					</div>
-				</div>`).join('');
+				</div>
+			</div>`).join('');
 		box.onclick = e => {
 			const item = e.target.closest('.news-item');
 			if (item) go('news/detail', { id: item.dataset.id });
