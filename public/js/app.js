@@ -79,7 +79,7 @@ async function router() {
 	pageEl.innerHTML = '';
 	window.scrollTo(0, 0);
 	try {
-		const mod = await import('./pages/' + route.mod + '?v=20260925d');
+		const mod = await import('./pages/' + route.mod + '?v=20260925e');
 		if (parseHash().path !== path) return;
 		currentMod = mod;
 		await mod.render(pageEl, params);
