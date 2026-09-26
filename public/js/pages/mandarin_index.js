@@ -18,7 +18,7 @@ export const COURSES = [
 	title: 'i的发音练习',
 	cover: '/assets/img/mandarin-cover.jpg',
 	video: VIDEO_BASE + 'mandarin_2.mp4',
-	description: '学习鼻辅音 i 的标准发音方法与口型练习',
+	description: '学习元音 i 的标准发音方法与口型练习',
 	duration: '07:00'
 }
 ];
