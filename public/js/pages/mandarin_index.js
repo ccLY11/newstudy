@@ -20,6 +20,22 @@ export const COURSES = [
 	video: VIDEO_BASE + 'mandarin_2.mp4',
 	description: '学习元音 i 的标准发音方法与口型练习',
 	duration: '07:00'
+},
+{
+	id: 3,
+	title: 'l的发音练习',
+	cover: '/assets/img/mandarin-cover.jpg',
+	video: VIDEO_BASE + 'mandarin_3.mp4',
+	description: '学习声母 l 的标准发音方法与口型练习',
+	duration: '06:32'
+},
+{
+	id: 4,
+	title: 'g的发音练习',
+	cover: '/assets/img/mandarin-cover.jpg',
+	video: VIDEO_BASE + 'mandarin_4.mp4',
+	description: '学习声母 g 的标准发音方法与口型练习',
+	duration: '05:06'
 }
 ];
 
